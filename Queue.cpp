@@ -25,13 +25,13 @@ Queue::~Queue()
 	clear();
 }
 
-void Queue::enqueue(int num)
+void Queue::enqueue(int move[3][3])
 {
 	node *newNode = nullptr;
 
 	newNode = new node;
 
-	newNode->value = num;
+	newNode->move = num;
 	newNode->next = nullptr;
 
 	if (isEmpty())
