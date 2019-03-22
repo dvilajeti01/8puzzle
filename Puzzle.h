@@ -1,7 +1,7 @@
 #pragma once
 
 //
-//  Breadth_First_Search.h
+//  Puzzle.h
 //  AI_Project1
 //
 //  Created by Daniel Vilajeti on 3/3/19.
@@ -9,33 +9,51 @@
 //
 
 
-class Queue
+#include "Queue.h"
+#include <unordered_map>
+
+
+class Puzzle
 {
 private:
-	struct node
-	{
-		int move[3][3];
-		int root_move[3][3];
-		node *next;
-	};
 
-	node *front;
-	node *rear;
-	int num_items;
+
+	int initial_state[3][3] = { {1,2,3},{4,5,6},{7,8,0} };
+	int goal_state[3][3];
+
+	Queue explored;
+	Queue frontier;
+
 
 public:
 
-	Queue();
 
-	~Queue();
 
-	void enqueue(int num);
+	~Puzzle()
+	{
+		shuffle(initial_state);
+		goal_state[3][3] = { { 0,1,2 },{ 3,4,5 },{ 6,7,8 } };
+	}
 
-	void dequeue(int &x);
 
-	bool isEmpty();
+	void solve();
 
-	void clear();
+	bool breadth_first(int initial_state[3][3], Queue explored, Queue frontier);
+
+	bool Goal_Test(int initial_state[3][3], int goal_state[3][3]);
+
+	void next_state(int current_state[3][3]);
+
+	bool explored(int current_state[3][3]);
+
+	void shuffle(int initial_state[3][3]);
+	
+	void rand_array(int real_arr[3]);
+	
+
+
 
 
 };
+
+
