@@ -14,7 +14,8 @@ class Queue
 private:
 	struct node
 	{
-		int value;
+		int move[3][3];
+		int root_move[3][3];
 		node *next;
 	};
 
@@ -38,5 +39,3 @@ public:
 
 
 };
-
-
