@@ -14,7 +14,8 @@ using namespace std;
 
 void Puzzle::solve()
 {
-	breadth_first(this->initial_state);
+	if (!breadth_first(this->initial_state))
+		cout << "NOT SOLVE-ABLE";
 }
 
 bool Puzzle::breadth_first(int initial_state[3][3])
@@ -46,9 +47,6 @@ bool Puzzle::breadth_first(int initial_state[3][3])
 		{
 			return true;
 		}
-
-		delete[] current_state;
-		delete[] root_state;
 
 	}
 
@@ -210,73 +208,61 @@ bool Puzzle::is_explored(int current_state[3][3])
 
 void Puzzle::shuffle(int initial_state[3][3])
 {
-	unordered_map<int, int[3]> order;
-	int i_arr[3];
+	int i_arr[9];
+	int row = 0;
+	int col = 0;
 
-	//POPULATE ORDERED MAP WHICH REPRESENTS THE INDEXES OF A SHUFFLED 2-D ARRAY
-	for (int i = 0; i < 3; i++)
+	//initialize array with 9 random unique numbers ranging from [0-8]
+	rand_array(i_arr);
+
+	for (int i = 0; i < 9; i++)
 	{
-		rand_array(order[i_arr[i]]);
-
-	}
-
-	int temp[3][3];
-	//COPY INITIAL ARRAY ELEMENTS TO TO TEMP ARRAY
-	memcpy(temp, initial_state, sizeof(temp));
-
-	//SHUFFLE 2-D ARRAY
-	for (auto i = order.begin(); i != order.end(); i++)
-	{
-		for (int j = 0; j < 3; j++)
+		if (col == 3)
 		{
-			for (int k = 0; k < 3; k++)
-			{
-				initial_state[j][k] = temp[i->first][i->second[k]];
-				if (initial_state[j][k] == 0) //store location of zero
-				{
-					this->row = j;
-					this->col = k;
-				}
-			}
-			i++;
+			col = 0;
+			row++;
 		}
+
+		if (i_arr[i] == 0)
+		{
+			this->row = row;
+			this->col = col;
+		}
+
+		initial_state[row][col] = i_arr[i];
+		col++;
 	}
-
-
 }
 
-void Puzzle::rand_array(int real_arr[3])
+void Puzzle::rand_array(int real_arr[9])
 {
-	int count = 0;
 	int num;
-	bool exists = 0;
+	int count;
 
-	//INITIALIZES AN ARRAY WITH 3 DISTINCT RANDOM NUMBERS RANGING FROM 0-2(inclusive)
-	for (int i = 2; i >= 0; i--)
+	for (int i = 0; i < 9; i++)
 	{
-		count = 0;
+		num = rand() % 9;
 
-		while (count == 0)
+		count = 1;
+
+		while (count > 0)
 		{
-			num = rand() % 3;
+			count = 0;
 
-			for (int j = i + 1; j < 3; j++)
+			for (int j = 0; j < i; j++)
 			{
-				if (real_arr[j] == num)
+				if (num == real_arr[j])
 				{
-					exists = true;
+					count++;
+					num = rand() % 9;
 					break;
 				}
-				else
-					exists = false;
 			}
 
-			if (exists == false)
-			{
-				real_arr[i] = num;
-				count = 1;
-			}
+
 		}
+
+		real_arr[i] = num;
 	}
 
 }
@@ -309,7 +295,7 @@ bool Puzzle::compare(int **move1,int move2[3][3])
 void Puzzle::getPath(int **solution)
 {
 	
-	if (**solution == 0)
+	if (compare(solution,null_vector))
 		return;
 	else
 	{
@@ -339,5 +325,18 @@ void Puzzle::printState(int state[3][3])
 			cout << state[i][j] << " ";
 
 		cout << "\n";
+	}
+}
+
+void Puzzle::findZero(int state[3][3])
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			if (state[i][j] == 0)
+			{
+				this->row = i;
+				this->col = j;
+			}
 	}
 }
