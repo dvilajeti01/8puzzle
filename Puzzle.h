@@ -20,7 +20,7 @@ private:
 
 	//Stores initial state
 	int initial_state[3][3];
-
+	int null_vector[3][3] = { {0,0,0},{0,0,0},{0,0,0} };
 	//Stores goal state (immutable for now)
 	int goal_state[3][3] = { { 0, 1, 2 },{ 3, 4, 5 },{ 6, 7, 8 } };
 
@@ -56,6 +56,7 @@ public:
 	Puzzle(int state[3][3])
 	{
 		memcpy(initial_state, state, sizeof(initial_state));
+		findZero(initial_state);
 	}
 
 	//MEMBER FUNCTIONS
@@ -95,4 +96,5 @@ public:
 	void printState(int **state);
 	void printState(int state[3][3]);
 
+	void findZero(int state[3][3]);
 };
