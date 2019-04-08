@@ -33,11 +33,24 @@ void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
 
 	memcpy(newNode->move,move,sizeof(newNode->move));
 
-	for (int i = 0; i < 3; i++)
+	if (root_move == NULL)
 	{
-		memcpy(*(newNode->root_move + i), *(root_move + i), sizeof(*newNode->root_move));
+		//MAKE NULL VECTOR
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+				newNode->root_move[i][j] = 0;
+		}
 	}
-	
+	else
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			memcpy(*(newNode->root_move + i), *(root_move + i), sizeof(*newNode->root_move));
+		}
+	}
+
+
 	newNode->row = row;
 	newNode->col = col;
 	newNode->next = nullptr;
