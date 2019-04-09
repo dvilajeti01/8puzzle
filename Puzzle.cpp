@@ -12,6 +12,40 @@
 #include <unordered_map>
 using namespace std;
 
+//Deffault constructor which produces a randomly generated initial state
+Puzzle()
+{
+    shuffle(initial_state);
+}
+    
+//Construct a puzzle with user specified initial state
+Puzzle(int state[3][3])
+{
+    //Copies the user specified state to the initial state
+    memcpy(initial_state, state, sizeof(initial_state));
+        
+    //locates where the "0" or empty square lies
+    findZero(initial_state);
+}
+
+~Puzzle()
+{
+    //Deletes all dynamically allocated memory
+    for(int i = 0; i < 3; i++)
+    {
+        delete [] current_state[i];
+    }
+        
+    delete [] current_state;
+        
+    for(int i = 0; i < 3; i++)
+    {
+        delete [] root_state[i];
+    }
+        
+    delete [] root_state;
+}
+
 void Puzzle::solve()
 {
     if (!breadth_first(this->initial_state))
@@ -282,14 +316,14 @@ bool Puzzle::compare(int **move1,int **move2)
     return true;
 }
 
-//RECURSIVELY RUN UNTIL YOU HIT NULL PARENT(0)
+//RECURSIVELY PRINT PATH TO GOAL STATE)
 void Puzzle::getPath(int **solution)
 {
     for (auto x : explored)
     {
         if(compare(solution, x.first))
         {
-            if(!compare(x.second, null_vector))
+            if(!compare(x.second, null_matrix))
             {
                 getPath(x.second);
                 printState(x.second);
