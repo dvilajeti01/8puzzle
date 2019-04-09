@@ -12,10 +12,15 @@
 class Queue
 {
 private:
+    
+    //Declaration of a node to be stored in queue
     struct node
     {
+        //Every node contains a state ("move") and its corresponding parent state ("root_move")
         int move[3][3];
         int root_move[3][3];
+        
+        //pointer to next node
         node *next;
         
         //location of zero
@@ -23,8 +28,13 @@ private:
         int col;
     };
     
+    //Pointer to the front of the queue
     node *front;
+    
+    //Pointer to the end of the queue
     node *rear;
+    
+    //Number of items in the queue
     int num_items;
     
 public:
