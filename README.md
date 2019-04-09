@@ -36,20 +36,44 @@ For example:
 
 ``` c++
 Puzzle test;
-test.solve("BFS"); ``` -> Solves randomly provided initial state using the breadth first search algortihm
+test.solve("BFS"); -> Solves randomly provided initial state using the breadth first search algortihm
 
-```c++
+``` 
+
+``` c++
 bool breadth_first(int initial state[3][3]);
+
 ```
 This member function will be called by ``` void test() ``` . The actual implementation of the algorith lives in this function
 which returns ``` true ``` if a solution is found or ``` false ``` if no solution found.
 
-
+``` c++
 bool next_state(int **state, int row, int col);
+```
+
+``` next_state ``` generates all possible moves for a given moves based on the location of the empty square or "0".
+There may be at most 4 moves generated and once the move is generated the goal test is applied before appending to the queue.
+
+``` c++
 bool is_explored(int current_state[3][3]);
+```
+
+``` is_explored ``` tests for the existence of given state within the explored unordered map in which it will return ``` true ``` if found or otherwise ``` false ```.
+
+``` c++
 void shuffle(int initial_state[3][3]);
 void rand_array(int real_arr[9]);
+
+```
+
+The ``` shuffle ``` function shuffles a given state by calling ``` rand_array ``` which produces an array of 9 unique numbers between [0-9] and maps these values to a 2D array.
+
+``` c++
 void getPath(int **solution);
-void findZero(int state[3][3], int *row, int *col)
+```
+
+``` getPath ``` prints the path from a given state to the initial state. This is implemented by recursively printing the root state(excluding null matrix) of a given state until initial state is reached.
+
+
 
 
