@@ -20,7 +20,9 @@ private:
     
     //Stores initial state
     int initial_state[3][3];
-    int null_vector[3][3] = { {0,0,0},{0,0,0},{0,0,0} };
+    
+    //Stores a 2d array which represents the null matrix
+    int null_matrix[3][3] = { {0,0,0},{0,0,0},{0,0,0} };
     //Stores goal state (immutable for now)
     int goal_state[3][3] = { { 0, 1, 2 },{ 3, 4, 5 },{ 6, 7, 8 } };
     
@@ -53,13 +55,18 @@ public:
         shuffle(initial_state);
     }
     
+    //Construct a puzzle with user specified initial state
     Puzzle(int state[3][3])
     {
+        //Copies the user specified state to the initial state
         memcpy(initial_state, state, sizeof(initial_state));
+        
+        //locates where the "0" or empty square lies
         findZero(initial_state);
     }
     ~Puzzle()
     {
+        //Deletes all dynamically allocated memory
         for(int i = 0; i < 3; i++)
         {
             delete [] current_state[i];
@@ -113,8 +120,10 @@ public:
     void printState(int **state);
     void printState(int state[3][3]);
     
+    //Locates the "0" or empty square for a given state
     void findZero(int state[3][3]);
     
+    //Copies the contents of the "from" array to the "to" array
     void copyArray(int **to, int from[3][3]);
     void copyArray(int to[3][3], int **from);
 };
