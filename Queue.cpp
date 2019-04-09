@@ -27,7 +27,7 @@ Queue::~Queue()
 
 void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
 {
-    int nullVector[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    int null_matrix[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     node *newNode = nullptr;
     
     newNode = new node;
@@ -37,7 +37,7 @@ void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
     if (root_move == NULL)
     {
         //MAKE NULL VECTOR
-        memcpy(newNode->root_move,nullVector,sizeof(newNode->root_move));
+        memcpy(newNode->root_move,null_matrix,sizeof(newNode->root_move));
         
     }
     else
@@ -67,7 +67,7 @@ void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
 void Queue::dequeue(int **move, int **root_move, int *row, int *col)
 {
     node *temp = nullptr;
-    int nullVector[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
+    int null_matrix[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
     
     if (isEmpty())
     {
@@ -78,10 +78,10 @@ void Queue::dequeue(int **move, int **root_move, int *row, int *col)
         copyArray(move, front->move);
     
         
-        if (compare(front->root_move, nullVector))
+        if (compare(front->root_move, null_matrix))
         {
             //MAKE NULL VECTOR
-            copyArray(root_move, nullVector);
+            copyArray(root_move, null_matrix);
 
         }
         else
