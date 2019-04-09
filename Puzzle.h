@@ -96,8 +96,8 @@ public:
     //Shuffles the initial state
     void shuffle(int initial_state[3][3]);
     
-    //Generates 3 unique numbers in the range [0-2]
-    void rand_array(int real_arr[3]);
+    //Generates 3 unique numbers in the range [0-9]
+    void rand_array(int real_arr[9]);
     
     //Swaps two given values
     void swap(int &x, int &y);
