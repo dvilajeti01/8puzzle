@@ -9,7 +9,7 @@ Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 
 Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 
-Explanation of classes and their respective member functions:
+# Explanation of the ``` Puzzle ``` class and its respective member functions:
 
 ``` Puzzle.h ```
 
@@ -74,6 +74,94 @@ void getPath(int **solution);
 
 ``` getPath ``` prints the path from a given state to the initial state. This is implemented by recursively printing the root state(excluding null matrix) of a given state until initial state is reached.
 
+# Explanation of the data structures and containers used
+
+All moves are first stored in the frontier which is implemented as a FIFO Queue. The Queue is made up of nodes where each node contains a state/move, the corresponding root move/state from which the move/state derived from, the row and col index where the empty square lies and a pointer to the next node.
 
 
 
+```
+NODE
+=====================
+MOVE               ||
+-----------------  ||
+[ 0 2 5 ] row = 0  ||
+[ 1 3 6 ] col = 0  ||
+[ 7 4 8 ]          ||
+          *pointer -------------|  
+ROOT MOVE          ||           |
+----------------   ||           |
+[ 2 0 5 ]          ||           |
+[ 1 3 6 ]          ||           |
+[ 7 4 8 ]          ||           |
+=====================           |
+                                |
+NODE                            |
+=====================           |
+MOVE               ||<----------|
+-----------------  ||
+[ 2 0 5 ] row = 0  ||
+[ 1 3 6 ] col = 1  ||
+[ 7 4 8 ]          ||
+          *pointer -------------|  
+ROOT MOVE          ||           |
+----------------   ||           |
+[ 2 5 0 ]          ||           |
+[ 1 3 6 ]          ||           |
+[ 7 4 8 ]          ||           |
+=====================           |
+                                |
+NODE                            |
+=====================           |
+MOVE               ||<----------|
+-----------------  ||
+[ 2 5 0 ] row = 0  ||
+[ 1 3 6 ] col = 2  ||
+[ 7 4 8 ]          ||
+          *pointer -------------|  
+ROOT MOVE          ||           |
+----------------   ||           |
+[ 2 5 6 ]          ||           |
+[ 1 3 0 ]          ||           |
+[ 7 4 8 ]          ||           |
+=====================           |
+                                |
+NODE                            |
+=====================           |
+MOVE               ||<----------|
+-----------------  ||
+[ 2 5 6 ] row = 1  ||
+[ 1 3 0 ] col = 2  ||
+[ 7 4 8 ]          ||
+          *pointer ---------------> NULL  
+ROOT MOVE          ||           
+----------------   ||           
+[ 2 5 6 ]          ||           
+[ 1 3 8 ]          ||           
+[ 7 4 0 ]          ||           
+=====================           
+
+```
+
+Once a move is dequed from the Queue it is considered "explored" and added to the ``` unordered_map ```. The move is mapped a the ```key``` and its corresponding root move is the ```value```. All the keys in the map are unique.
+
+
+```
+
+KEY           VALUE
+
+[ 2 0 5 ]     [ 0 0 0 ]
+[ 1 3 6 ]     [ 0 0 0 ]
+[ 7 4 8 ]     [ 0 0 0 ]
+
+
+[ 2 5 0 ]     [ 2 0 5 ]
+[ 1 3 6 ]     [ 1 3 6 ]
+[ 7 4 8 ]     [ 7 4 8 ]
+
+
+[ 2 5 6 ]     [ 2 5 0 ]
+[ 1 3 0 ]     [ 1 3 6 ]
+[ 7 4 8 ]     [ 7 4 8 ]
+
+```
