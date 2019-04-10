@@ -7,7 +7,88 @@ Test Runs:
 
 Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 
+# OUTPUT
+```
+2 0 5 
+1 3 6 
+7 4 8 
+
+0 2 5 
+1 3 6 
+7 4 8 
+
+1 2 5 
+0 3 6 
+7 4 8 
+
+1 2 5 
+3 0 6 
+7 4 8 
+
+1 2 5 
+3 6 0 
+7 4 8 
+
+1 2 0 
+3 6 5 
+7 4 8 
+
+1 0 2 
+3 6 5 
+7 4 8 
+
+0 1 2 
+3 6 5 
+7 4 8 
+
+3 1 2 
+0 6 5 
+7 4 8 
+
+3 1 2 
+6 0 5 
+7 4 8 
+
+3 1 2 
+6 4 5 
+7 0 8 
+
+3 1 2 
+6 4 5 
+0 7 8 
+
+3 1 2 
+0 4 5 
+6 7 8 
+
+0 1 2 
+3 4 5 
+6 7 8 
+
+The progrma took 199 milliseconds.
+```
+
 Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
+
+# OUTPUT
+
+```
+
+1 2 0 
+3 4 5 
+6 7 8 
+
+1 0 2 
+3 4 5 
+6 7 8 
+
+0 1 2 
+3 4 5 
+6 7 8 
+
+The progrma took 0 milliseconds.
+
+```
 
 # Explanation of the ``` Puzzle ``` class and its respective member functions:
 
