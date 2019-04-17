@@ -26,7 +26,7 @@ Puzzle::Puzzle(int state[3][3])
 	memcpy(initial_state, state, sizeof(initial_state));
 
 	//locates where the "0" or empty square lies
-	findZero(initial_state);
+	findZero(initial_state,&this->row, &this->col);
 }
 
 Puzzle::~Puzzle()
@@ -98,6 +98,35 @@ bool Puzzle::breadth_first(int initial_state[3][3])
 	}
 
 	return false;
+}
+
+bool Puzzle:: A_star(int initial_state[3][3])
+{
+    /*
+    // q: frontier; explored: explored set
+    q.push(initialState);
+    while (!q.isEmpty())
+    {
+        node = q.pop();
+        if (GoalTest(node))
+            return; // solution found
+        explored.add(node);
+        for (each child of node)
+        {
+            if (!explored.contains(child) && !q.contains(child))
+            {
+                q.push(child);
+            }
+            else if (q.contains(child) && new_path < old_path)
+            {
+                update child.path and child.parent;
+            }
+        }
+    }
+    return; // solution not found
+     */
+    return false;
+    
 }
 
 bool Puzzle::Goal_Test(int **current_state)
@@ -375,17 +404,30 @@ void Puzzle::printState(int state[3][3])
 	cout << "\n";
 }
 
-void Puzzle::findZero(int state[3][3])
+void Puzzle::findZero(int state[3][3], int *row, int *col)
 {
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 			if (state[i][j] == 0)
 			{
-				this->row = i;
-				this->col = j;
+				*row = i;
+				*col = j;
 			}
 	}
+}
+
+void Puzzle::findZero(int **state, int *row, int *col)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+            if (state[i][j] == 0)
+            {
+                *row = i;
+                *col = j;
+            }
+    }
 }
 
 void Puzzle::copyArray(int **to, int from[3][3])
