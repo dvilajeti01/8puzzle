@@ -29,16 +29,16 @@ private:
 	//Stores the latest popped state
 	int ** current_state;
 
-	//int current_state[3][3]; //MAKE DYNAMIC
-
 	//stores the root state of the latest popped state
-	int ** root_state; //MAKE DYNAMIC
+	int ** root_state;
 
 	//Row location of the 0 of the latest popped state
 	int row;
 
 	//Row location of the 0 of the latest popped state
 	int col;
+
+	int cumulativeCost;
 
 	//Queue of the frontier
 	Queue frontier;
@@ -64,11 +64,15 @@ public:
 
 	void getInitialState(int **state);
 
+	int getCumulativeCost();
+
 	//Solve the the 8 Puzzle problem
-	void solve();
+	void solve(string search_algo);
 
 	//non-informed breadth first search algorithim
 	bool breadth_first(int initial_state[3][3]);
+
+	bool A_star(int initial_state[3][3]);
 
 	//Tests if given state is the goal state
 	bool Goal_Test(int **current_state);
@@ -76,6 +80,7 @@ public:
 
 	//Producess next state
 	bool next_state(int **current_state, int row, int col);
+	void Priority_next_state(int **current_state, int row, int col);
 
 	//Checks if given state exists in the explored map
 	bool is_explored(int current_state[3][3]);
@@ -101,9 +106,14 @@ public:
 	void printState(int state[3][3]);
 
 	//Locates the "0" or empty square for a given state
-	void findZero(int state[3][3]);
+	void findZero(int state[3][3], int *row, int *col);
+	void findZero(int **state, int *row, int *col);
+
 
 	//Copies the contents of the "from" array to the "to" array
 	void copyArray(int **to, int from[3][3]);
 	void copyArray(int to[3][3], int **from);
+
+	int Heuristic_func(int state[3][3]);
+	int manhattan_distance(int num, int row, int col);
 };
