@@ -26,6 +26,9 @@ private:
 		//location of zero
 		int row;
 		int col;
+
+		//f(n) =  g(h) + h(n) == path cost + manhattan distance
+		int cost;
 	};
 
 	//Pointer to the front of the queue
@@ -48,6 +51,8 @@ public:
 	//Appends node to the queue
 	void enqueue(int move[3][3], int **root_move, int row, int col);
 
+	void priority_enqueue(int move[3][3], int **root_move, int row, int col,int cost);
+
 	//Removes the first value in the Queue and updates the values(passed by reference) of the current state, root state and location of the empty space
 	void dequeue(int **move, int **root_move, int *row, int *col);
 
@@ -69,5 +74,7 @@ public:
 	//Copies the values of the "from" array to the "to" Array
 	void copyArray(int **to, int from[3][3]);
 	void copyArray(int to[3][3], int **from);
+
+	void updateNode(int state[3][3],int **root_state, int cost);
 
 };

@@ -64,6 +64,61 @@ void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
 	num_items++;
 }
 
+void Queue::priority_enqueue(int move[3][3], int ** root_move, int row, int col, int cost)
+{
+	int null_matrix[3][3] = { { 0,0,0 },{ 0,0,0 },{ 0,0,0 } };
+	node *newNode = nullptr;
+
+	newNode = new node;
+
+	node *temp;
+	temp = front;
+
+
+	memcpy(newNode->move, move, sizeof(newNode->move));
+
+	if (root_move == NULL)
+	{
+		//MAKE NULL VECTOR
+		memcpy(newNode->root_move, null_matrix, sizeof(newNode->root_move));
+
+	}
+	else
+	{
+		copyArray(newNode->root_move, root_move);
+	}
+
+
+	newNode->row = row;
+	newNode->col = col;
+	newNode->cost = cost;
+	newNode->next = nullptr;
+
+	if (isEmpty())
+	{
+		front = newNode;
+		rear = newNode;
+	}
+	else
+	{
+		if (front->cost > cost)
+		{
+			newNode->next = front;
+			front = newNode;
+		}
+		else
+		{
+			while (temp->next != nullptr && temp->next->cost <= cost)
+				temp = temp->next;
+
+			newNode->next = temp->next;
+			temp->next = newNode;
+		}
+	}
+
+	num_items++;
+}
+
 void Queue::dequeue(int **move, int **root_move, int *row, int *col)
 {
 	node *temp = nullptr;
@@ -178,4 +233,26 @@ void Queue::copyArray(int to[3][3], int **from)
 		for (int j = 0; j < 3; j++)
 			to[i][j] = from[i][j];
 	}
+}
+
+void Queue::updateNode(int state[3][3],int **root_state, int cost)
+{
+	node *temp;
+
+	temp = front;
+	for (int i = 0; i < num_items; i++)
+	{
+		if (compare(temp->move, state))
+		{
+			if (temp->cost > cost)
+			{
+				temp->cost = cost;
+				copyArray(temp->root_move, root_state);
+				return;
+			}
+		}
+		else
+			temp = temp->next;
+	}
+	
 }

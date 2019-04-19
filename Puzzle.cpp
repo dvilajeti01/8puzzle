@@ -17,6 +17,7 @@ using namespace std;
 Puzzle::Puzzle()
 {
 	shuffle(initial_state);
+	cumulativeCost = 0;
 }
 
 //Construct a puzzle with user specified initial state
@@ -26,7 +27,9 @@ Puzzle::Puzzle(int state[3][3])
 	memcpy(initial_state, state, sizeof(initial_state));
 
 	//locates where the "0" or empty square lies
-	findZero(initial_state,&this->row, &this->col);
+	findZero(initial_state, &this->row, &this->col);
+
+	cumulativeCost = 0;
 }
 
 Puzzle::~Puzzle()
@@ -56,17 +59,33 @@ void Puzzle::getGoalState(int ** state)
 
 void Puzzle::getInitialState(int ** state)
 {
-	copyArray(state,initial_state);
+	copyArray(state, initial_state);
 }
 
-void Puzzle::solve()
+int Puzzle::getCumulativeCost()
 {
-	if (!breadth_first(this->initial_state))
-		cout << "NOT SOLVE-ABLE";
+	return cumulativeCost;
+}
+
+void Puzzle::solve(string search_algo)
+{
+	if (search_algo == "BFS")
+	{
+		if (!breadth_first(this->initial_state))
+			cout << "NOT SOLVE-ABLE";
+	}
+	else if (search_algo == "A_Star")
+	{
+		if (!A_star(this->initial_state))
+			cout << "NOT SOLVE-ABLE";
+	}
+	else
+		cout << "INVALID SEARCH ALGO\n";
 }
 
 bool Puzzle::breadth_first(int initial_state[3][3])
 {
+	int c = 0;
 	if (Goal_Test(initial_state))
 	{
 		printState(initial_state);
@@ -86,7 +105,6 @@ bool Puzzle::breadth_first(int initial_state[3][3])
 			root_state[i] = new int[3];
 
 		frontier.dequeue(current_state, root_state, &this->row, &this->col);
-
 		explored[current_state] = root_state;
 
 
@@ -100,33 +118,42 @@ bool Puzzle::breadth_first(int initial_state[3][3])
 	return false;
 }
 
-bool Puzzle:: A_star(int initial_state[3][3])
+bool Puzzle::A_star(int initial_state[3][3])
 {
-    /*
-    // q: frontier; explored: explored set
-    q.push(initialState);
-    while (!q.isEmpty())
-    {
-        node = q.pop();
-        if (GoalTest(node))
-            return; // solution found
-        explored.add(node);
-        for (each child of node)
-        {
-            if (!explored.contains(child) && !q.contains(child))
-            {
-                q.push(child);
-            }
-            else if (q.contains(child) && new_path < old_path)
-            {
-                update child.path and child.parent;
-            }
-        }
-    }
-    return; // solution not found
-     */
-    return false;
-    
+	int cost;
+
+	cost = Heuristic_func(initial_state);
+	frontier.priority_enqueue(initial_state, NULL, this->row, this->col,cost);
+	
+	while (!frontier.isEmpty())
+	{
+		current_state = new int *[3];
+		for (int i = 0; i < 3; i++)
+			current_state[i] = new int[3];
+
+		root_state = new int *[3];
+		for (int i = 0; i < 3; i++)
+			root_state[i] = new int[3];
+
+		frontier.dequeue(current_state, root_state, &this->row, &this->col);
+		cumulativeCost++;
+		if (Goal_Test(current_state))
+		{
+			getPath(root_state);
+			printState(root_state);
+			printState(current_state);
+			return true;
+		}
+
+		explored[current_state] = root_state;
+
+
+		Priority_next_state(this->current_state, this->row, this->col);
+
+	}
+
+	return false;
+
 }
 
 bool Puzzle::Goal_Test(int **current_state)
@@ -246,6 +273,80 @@ bool Puzzle::next_state(int **current_state, int row, int col)
 	}
 
 	return false;
+
+}
+
+void Puzzle::Priority_next_state(int **current_state, int row, int col)
+{
+	int temp[3][3];
+	int cost;
+
+	if ((row + 1) < 3)
+	{
+		copyArray(temp, current_state);
+		swap(temp[row][col], temp[row + 1][col]);
+		cost = Heuristic_func(temp);
+
+		if (!frontier.contains(temp) && !is_explored(temp))
+		{
+			frontier.priority_enqueue(temp, current_state, row + 1, col,cost);
+		}
+		else if (frontier.contains(temp))
+		{
+			frontier.updateNode(temp, current_state, cost);
+		}
+
+	}
+
+	if ((row - 1) >= 0)
+	{
+		copyArray(temp, current_state);
+		swap(temp[row][col], temp[row - 1][col]);
+		cost = Heuristic_func(temp);
+
+		if (!frontier.contains(temp) && !is_explored(temp))
+		{
+			frontier.priority_enqueue(temp, current_state, row - 1, col, cost);
+		}
+		else if (frontier.contains(temp))
+		{
+			frontier.updateNode(temp, current_state, cost);
+		}
+
+	}
+
+	if ((col + 1) < 3)
+	{
+		copyArray(temp, current_state);
+		swap(temp[row][col], temp[row][col+1]);
+		cost = Heuristic_func(temp);
+
+		if (!frontier.contains(temp) && !is_explored(temp))
+		{
+			frontier.priority_enqueue(temp, current_state, row, col + 1, cost);
+		}
+		else if (frontier.contains(temp))
+		{
+			frontier.updateNode(temp, current_state, cost);
+		}
+	}
+
+	if ((col - 1) >= 0)
+	{
+		copyArray(temp, current_state);
+		swap(temp[row][col], temp[row][col - 1]);
+		cost = Heuristic_func(temp);
+
+		if (!frontier.contains(temp) && !is_explored(temp))
+		{
+			frontier.priority_enqueue(temp, current_state, row, col - 1, cost);
+		}
+		else if (frontier.contains(temp))
+		{
+			frontier.updateNode(temp, current_state, cost);
+		}
+	}
+
 
 }
 
@@ -419,15 +520,15 @@ void Puzzle::findZero(int state[3][3], int *row, int *col)
 
 void Puzzle::findZero(int **state, int *row, int *col)
 {
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-            if (state[i][j] == 0)
-            {
-                *row = i;
-                *col = j;
-            }
-    }
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			if (state[i][j] == 0)
+			{
+				*row = i;
+				*col = j;
+			}
+	}
 }
 
 void Puzzle::copyArray(int **to, int from[3][3])
@@ -446,6 +547,38 @@ void Puzzle::copyArray(int to[3][3], int **from)
 	{
 		for (int j = 0; j < 3; j++)
 			to[i][j] = from[i][j];
+	}
+
+}
+
+int Puzzle::Heuristic_func(int state[3][3])
+{
+	int cost = 1;
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (goal_state[i][j] != state[i][j])
+				cost += manhattan_distance(state[i][j], i, j);
+		}
+	}
+	
+	return cost + cumulativeCost;
+}
+
+int Puzzle::manhattan_distance(int num, int row, int col)
+{
+	
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (goal_state[i][j] == num)
+			{
+				return (abs(i - row) + abs(j - col));
+			}
+		}
 	}
 
 }
