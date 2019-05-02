@@ -17,7 +17,7 @@ using namespace std;
 Puzzle::Puzzle()
 {
 	shuffle(initial_state);
-	cumulativeCost = 0;
+
 }
 
 //Construct a puzzle with user specified initial state
@@ -29,7 +29,6 @@ Puzzle::Puzzle(int state[3][3])
 	//locates where the "0" or empty square lies
 	findZero(initial_state, &this->row, &this->col);
 
-	cumulativeCost = 0;
 }
 
 Puzzle::~Puzzle()
@@ -60,11 +59,6 @@ void Puzzle::getGoalState(int ** state)
 void Puzzle::getInitialState(int ** state)
 {
 	copyArray(state, initial_state);
-}
-
-int Puzzle::getCumulativeCost()
-{
-	return cumulativeCost;
 }
 
 void Puzzle::solve(string search_algo)
@@ -120,10 +114,9 @@ bool Puzzle::breadth_first(int initial_state[3][3])
 
 bool Puzzle::A_star(int initial_state[3][3])
 {
-	int cost;
+	int cumulativeCost;
 
-	cost = Heuristic_func(initial_state);
-	frontier.priority_enqueue(initial_state, NULL, this->row, this->col,cost);
+	frontier.priority_enqueue(initial_state, NULL, this->row, this->col, Heuristic_func(initial_state),0);
 	
 	while (!frontier.isEmpty())
 	{
@@ -135,8 +128,7 @@ bool Puzzle::A_star(int initial_state[3][3])
 		for (int i = 0; i < 3; i++)
 			root_state[i] = new int[3];
 
-		frontier.dequeue(current_state, root_state, &this->row, &this->col);
-		cumulativeCost++;
+		cumulativeCost = frontier.dequeue(current_state, root_state, &this->row, &this->col);
 		if (Goal_Test(current_state))
 		{
 			getPath(root_state);
@@ -148,7 +140,7 @@ bool Puzzle::A_star(int initial_state[3][3])
 		explored[current_state] = root_state;
 
 
-		Priority_next_state(this->current_state, this->row, this->col);
+		Priority_next_state(this->current_state, this->row, this->col,cumulativeCost);
 
 	}
 
@@ -276,7 +268,7 @@ bool Puzzle::next_state(int **current_state, int row, int col)
 
 }
 
-void Puzzle::Priority_next_state(int **current_state, int row, int col)
+void Puzzle::Priority_next_state(int **current_state, int row, int col,int cumulativeCost)
 {
 	int temp[3][3];
 	int cost;
@@ -285,15 +277,15 @@ void Puzzle::Priority_next_state(int **current_state, int row, int col)
 	{
 		copyArray(temp, current_state);
 		swap(temp[row][col], temp[row + 1][col]);
-		cost = Heuristic_func(temp);
+		cost = Heuristic_func(temp) + cumulativeCost;
 
 		if (!frontier.contains(temp) && !is_explored(temp))
 		{
-			frontier.priority_enqueue(temp, current_state, row + 1, col,cost);
+			frontier.priority_enqueue(temp, current_state, row + 1, col,cost + 1,cumulativeCost);
 		}
 		else if (frontier.contains(temp))
 		{
-			frontier.updateNode(temp, current_state, cost);
+			frontier.updateNode(temp, current_state, cost + 1, cumulativeCost);
 		}
 
 	}
@@ -302,15 +294,15 @@ void Puzzle::Priority_next_state(int **current_state, int row, int col)
 	{
 		copyArray(temp, current_state);
 		swap(temp[row][col], temp[row - 1][col]);
-		cost = Heuristic_func(temp);
+		cost = Heuristic_func(temp) + cumulativeCost;
 
 		if (!frontier.contains(temp) && !is_explored(temp))
 		{
-			frontier.priority_enqueue(temp, current_state, row - 1, col, cost);
+			frontier.priority_enqueue(temp, current_state, row + 1, col, cost + 1, cumulativeCost);
 		}
 		else if (frontier.contains(temp))
 		{
-			frontier.updateNode(temp, current_state, cost);
+			frontier.updateNode(temp, current_state, cost + 1, cumulativeCost);
 		}
 
 	}
@@ -319,15 +311,15 @@ void Puzzle::Priority_next_state(int **current_state, int row, int col)
 	{
 		copyArray(temp, current_state);
 		swap(temp[row][col], temp[row][col+1]);
-		cost = Heuristic_func(temp);
+		cost = Heuristic_func(temp) + cumulativeCost;
 
 		if (!frontier.contains(temp) && !is_explored(temp))
 		{
-			frontier.priority_enqueue(temp, current_state, row, col + 1, cost);
+			frontier.priority_enqueue(temp, current_state, row + 1, col, cost + 1, cumulativeCost);
 		}
 		else if (frontier.contains(temp))
 		{
-			frontier.updateNode(temp, current_state, cost);
+			frontier.updateNode(temp, current_state, cost + 1, cumulativeCost);
 		}
 	}
 
@@ -335,15 +327,15 @@ void Puzzle::Priority_next_state(int **current_state, int row, int col)
 	{
 		copyArray(temp, current_state);
 		swap(temp[row][col], temp[row][col - 1]);
-		cost = Heuristic_func(temp);
+		cost = Heuristic_func(temp) + cumulativeCost;
 
 		if (!frontier.contains(temp) && !is_explored(temp))
 		{
-			frontier.priority_enqueue(temp, current_state, row, col - 1, cost);
+			frontier.priority_enqueue(temp, current_state, row + 1, col, cost + 1, cumulativeCost);
 		}
 		else if (frontier.contains(temp))
 		{
-			frontier.updateNode(temp, current_state, cost);
+			frontier.updateNode(temp, current_state, cost + 1, cumulativeCost);
 		}
 	}
 
@@ -553,32 +545,34 @@ void Puzzle::copyArray(int to[3][3], int **from)
 
 int Puzzle::Heuristic_func(int state[3][3])
 {
-	int cost = 1;
+	int cost = 0;
 
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			if (goal_state[i][j] != state[i][j])
+			if (this->goal_state[i][j] != state[i][j])
 				cost += manhattan_distance(state[i][j], i, j);
 		}
 	}
 	
-	return cost + cumulativeCost;
+	return cost;
 }
 
 int Puzzle::manhattan_distance(int num, int row, int col)
 {
-	
+	int man_dist = 0;
+
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
 			if (goal_state[i][j] == num)
 			{
-				return (abs(i - row) + abs(j - col));
+				man_dist = (abs(i - row) + abs(j - col));
 			}
 		}
 	}
 
+	return man_dist;
 }

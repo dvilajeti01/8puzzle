@@ -24,6 +24,8 @@ int main(int argc, const char * argv[]) {
 	system("pause");
 
 	Puzzle test2(arr);
+
+
 	start_T = high_resolution_clock::now();
 	test2.solve("A_Star");
 	end_T = high_resolution_clock::now();

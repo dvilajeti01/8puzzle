@@ -64,7 +64,7 @@ void Queue::enqueue(int move[3][3], int **root_move, int row, int col)
 	num_items++;
 }
 
-void Queue::priority_enqueue(int move[3][3], int ** root_move, int row, int col, int cost)
+void Queue::priority_enqueue(int move[3][3], int ** root_move, int row, int col, int cost, int parent_cost)
 {
 	int null_matrix[3][3] = { { 0,0,0 },{ 0,0,0 },{ 0,0,0 } };
 	node *newNode = nullptr;
@@ -92,6 +92,7 @@ void Queue::priority_enqueue(int move[3][3], int ** root_move, int row, int col,
 	newNode->row = row;
 	newNode->col = col;
 	newNode->cost = cost;
+	newNode->parent_cost = parent_cost;
 	newNode->next = nullptr;
 
 	if (isEmpty())
@@ -119,10 +120,11 @@ void Queue::priority_enqueue(int move[3][3], int ** root_move, int row, int col,
 	num_items++;
 }
 
-void Queue::dequeue(int **move, int **root_move, int *row, int *col)
+int Queue::dequeue(int **move, int **root_move, int *row, int *col)
 {
 	node *temp = nullptr;
 	int null_matrix[3][3] = { { 0,0,0 },{ 0,0,0 },{ 0,0,0 } };
+	int parent_cost;
 
 	if (isEmpty())
 	{
@@ -147,7 +149,7 @@ void Queue::dequeue(int **move, int **root_move, int *row, int *col)
 
 		*row = front->row;
 		*col = front->col;
-
+		parent_cost = front->parent_cost;
 		temp = front;
 		front = front->next;
 		delete temp;
@@ -155,6 +157,8 @@ void Queue::dequeue(int **move, int **root_move, int *row, int *col)
 		num_items--;
 
 	}
+
+	return parent_cost;
 }
 
 void Queue::dequeue()
@@ -235,7 +239,7 @@ void Queue::copyArray(int to[3][3], int **from)
 	}
 }
 
-void Queue::updateNode(int state[3][3],int **root_state, int cost)
+void Queue::updateNode(int state[3][3],int **root_state, int cost, int cumulative_cost)
 {
 	node *temp;
 
@@ -247,6 +251,7 @@ void Queue::updateNode(int state[3][3],int **root_state, int cost)
 			if (temp->cost > cost)
 			{
 				temp->cost = cost;
+				temp->parent_cost = cumulative_cost;
 				copyArray(temp->root_move, root_state);
 				return;
 			}

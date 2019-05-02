@@ -23,6 +23,7 @@ private:
 
 	//Stores a 2d array which represents the null matrix
 	int null_matrix[3][3] = { { 0,0,0 },{ 0,0,0 },{ 0,0,0 } };
+	
 	//Stores goal state (immutable for now)
 	int goal_state[3][3] = { { 0, 1, 2 },{ 3, 4, 5 },{ 6, 7, 8 } };
 
@@ -37,8 +38,6 @@ private:
 
 	//Row location of the 0 of the latest popped state
 	int col;
-
-	int cumulativeCost;
 
 	//Queue of the frontier
 	Queue frontier;
@@ -64,8 +63,6 @@ public:
 
 	void getInitialState(int **state);
 
-	int getCumulativeCost();
-
 	//Solve the the 8 Puzzle problem
 	void solve(string search_algo);
 
@@ -80,7 +77,7 @@ public:
 
 	//Producess next state
 	bool next_state(int **current_state, int row, int col);
-	void Priority_next_state(int **current_state, int row, int col);
+	void Priority_next_state(int **current_state, int row, int col, int cumulativeCost);
 
 	//Checks if given state exists in the explored map
 	bool is_explored(int current_state[3][3]);
