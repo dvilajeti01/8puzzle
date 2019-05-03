@@ -23,9 +23,30 @@ int main(int argc, const char * argv[]) {
 
 	system("pause");
 
-	Puzzle test2(arr);
+	Puzzle test2(arr2);
+
 	start_T = high_resolution_clock::now();
-	test2.solve("A_Star");
+	test2.solve("BFS");
+	end_T = high_resolution_clock::now();
+
+	cout << "The program took " << duration_cast<milliseconds>(end_T - start_T).count() << " milliseconds." << endl;
+	//cout << test.getCumulativeCost() << endl;
+	system("pause");
+
+	Puzzle test3(arr);
+
+	start_T = high_resolution_clock::now();
+	test3.solve("A_Star");
+	end_T = high_resolution_clock::now();
+
+	cout << "The program took " << duration_cast<milliseconds>(end_T - start_T).count() << " milliseconds." << endl;
+	//cout << test.getCumulativeCost() << endl;
+	system("pause");
+
+	Puzzle test4(arr2);
+
+	start_T = high_resolution_clock::now();
+	test4.solve("A_Star");
 	end_T = high_resolution_clock::now();
 
 	cout << "The program took " << duration_cast<milliseconds>(end_T - start_T).count() << " milliseconds." << endl;

@@ -1,10 +1,11 @@
 # 8puzzle
-AI project : Solving the 8puzzle game using breadth first search un-iformed search algorithm.
+AI project : Solving the 8puzzle game using breadth first search and A* search algorithms.
 
 Project Members: Daniel Vilajeti
 
 Test Runs:
 
+Breadth First Search
 Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 
 # OUTPUT
@@ -65,9 +66,75 @@ Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 3 4 5 
 6 7 8 
 
-The progrma took 199 milliseconds.
-```
+The program took 220 milliseconds.
 
+```
+A* Search
+Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
+
+# OUTPUT
+
+```
+2 0 5 
+1 3 6 
+7 4 8 
+
+0 2 5 
+1 3 6 
+7 4 8 
+
+1 2 5 
+0 3 6 
+7 4 8 
+
+1 2 5 
+3 0 6 
+7 4 8 
+
+1 2 5 
+3 6 0 
+7 4 8 
+
+1 2 0 
+3 6 5 
+7 4 8 
+
+1 0 2 
+3 6 5 
+7 4 8 
+
+0 1 2 
+3 6 5 
+7 4 8 
+
+3 1 2 
+0 6 5 
+7 4 8 
+
+3 1 2 
+6 0 5 
+7 4 8 
+
+3 1 2 
+6 4 5 
+7 0 8 
+
+3 1 2 
+6 4 5 
+0 7 8 
+
+3 1 2 
+0 4 5 
+6 7 8 
+
+0 1 2 
+3 4 5 
+6 7 8 
+
+The program took 0 milliseconds.
+
+```
+Breadth First Search
 Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 
 # OUTPUT
@@ -86,8 +153,28 @@ Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 3 4 5 
 6 7 8 
 
-The progrma took 0 milliseconds.
+The program took 0 milliseconds.
+```
+A* Search
+Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 
+# OUTPUT
+
+```
+
+1 2 0 
+3 4 5 
+6 7 8 
+
+1 0 2 
+3 4 5 
+6 7 8 
+
+0 1 2 
+3 4 5 
+6 7 8 
+
+The program took 0 milliseconds.
 ```
 
 # Explanation of the ``` Puzzle ``` class and its respective member functions:
@@ -103,15 +190,13 @@ Instead you may pass your own initial state when creating an object of ``` Puzzl
 The ``` Puzzle ``` class key member functions:
 
 ``` c++
-void solve();
+void solve(string searchAlgo);
 
 ```
 
-Calling this function will attmept to solve the puzle, if the attempt is succeful the path from the initial state to
+Calling this function will attmept to solve the puzle using the given algorithm in the parameters, if the attempt is succeful the path from the initial state to
 the goal state is printed including the time it took to solve the problem (in milliseconds) else a message will be provided informing the user
-there was no solution found. Currently there is only one algorithm present.
-In the near future(~1-2 weeks) you will be able to choose between A* search or Breadth First Search by passing
-the option as a parameter.
+there was no solution found. 
 
 For example:
 
@@ -154,6 +239,11 @@ void getPath(int **solution);
 ```
 
 ``` getPath ``` prints the path from a given state to the initial state. This is implemented by recursively printing the root state(excluding null matrix) of a given state until initial state is reached.
+
+``` c++
+bool A_star(int initial_state[3][3]);
+```
+Calling this function will solve the given initial state using the A* search allgorithm. The algorith differs heavily compared to breadth first search algorithm. Firstly each move in the queue contains a path cost and a parent cost. The first being the (parent cost + 1) + ( manhattan distance). The manhattan distance is calculated in the ```int Heuristic_func(int state[3][3]);``` function which returns the manhattan distance of a given state. The manhattan distance is the diatnce from which a given sqaure is from its correct position. Obtained using the formula | x1 - x2 | + | y1 - y2 |. In additiopn to the heuristic function the queue is no longer a regulat FIFO queue rather a priority queue ordered based on the path cost. The final major difference is found in the goal test which takes place after a move has been explored rather then upon generation of the move.
 
 # Explanation of the data structures and containers used
 
