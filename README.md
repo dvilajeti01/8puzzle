@@ -66,12 +66,14 @@ Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 3 4 5 
 6 7 8 
 
+The program took 220 milliseconds.
 
 ```
 A* Search
 Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 
 # OUTPUT
+
 ```
 2 0 5 
 1 3 6 
@@ -129,6 +131,7 @@ Initial State = { {2,0,5} , {1,3,6} , {7,4,8} }; //Medium Difficulty
 3 4 5 
 6 7 8 
 
+The program took 0 milliseconds.
 
 ```
 Breadth First Search
@@ -150,7 +153,7 @@ Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 3 4 5 
 6 7 8 
 
-
+The program took 0 milliseconds.
 ```
 A* Search
 Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
@@ -171,7 +174,7 @@ Initial State = { {1,2,0} , {3,4,5} , {6,7,8} }; //Easy Difficulty
 3 4 5 
 6 7 8 
 
-
+The program took 0 milliseconds.
 ```
 
 # Explanation of the ``` Puzzle ``` class and its respective member functions:
